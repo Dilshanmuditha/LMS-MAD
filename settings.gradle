@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "LMS1"
+rootProject.name = "LMS_system"
 include ':app'
