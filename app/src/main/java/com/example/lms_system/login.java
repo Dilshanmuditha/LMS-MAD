@@ -54,7 +54,7 @@ public class login extends AppCompatActivity {
             public void onClick(View v) {
                 String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-                if (email.equals("admin") && password.equals("admin@123")) {
+                if (email.equals("admin@gmail.com") && password.equals("admin@123")) {
                     // Redirect to admin dashboard
                     startActivity(new Intent(login.this, AdminDashBoard.class));
                     finish();
@@ -97,14 +97,13 @@ public class login extends AppCompatActivity {
                                         }
                                     } else {
                                         Log.d(TAG, "Error getting user document: " + task.getException());
-                                        // Handle error case
+
                                     }
                                 }
                             });
                         } else {
                             Log.d(TAG, "signInWithEmail:failure", task.getException());
 
-                            // Handle login failure
                         }
                     }
                 });

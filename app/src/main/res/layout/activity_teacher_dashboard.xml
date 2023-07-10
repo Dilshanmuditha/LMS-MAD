@@ -65,11 +65,11 @@
 
                 <TextView
                     android:id="@+id/textView4"
-                    android:layout_width="350dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="276dp"
+                    android:layout_height="51dp"
                     android:layout_margin="5dp"
                     android:textColor="#07910D"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
 
@@ -82,7 +82,7 @@
             android:layout_width="350dp"
             android:layout_height="50dp"
             android:layout_margin="5dp"
-            android:background="@color/black"
+            android:background="@color/blue"
             android:text="Lecture Materials upload"
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -105,8 +105,8 @@
 
 
         <androidx.cardview.widget.CardView
-            android:layout_width="0dp"
-            android:layout_height="400dp"
+            android:layout_width="390dp"
+            android:layout_height="360dp"
             app:cardBackgroundColor="#D0F5BE"
             app:cardCornerRadius="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -117,12 +117,12 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="409dp">
+                android:layout_height="match_parent">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card1"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
                     android:layout_margin="10dp"
                     app:cardBackgroundColor="#116D6E"
                     app:cardCornerRadius="50dp"
@@ -134,24 +134,24 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView1"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_width="250dp"
+                            android:layout_height="59dp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginStart="26dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_marginBottom="0dp"
                             android:text="Upload Assignment and Exam marks"
                             android:textAlignment="center"
                             android:textColor="@color/white"
-                            android:textSize="32dp"
+                            android:textSize="18dp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -160,33 +160,37 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card2"
-                    android:layout_width="389dp"
-                    android:layout_height="100dp"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
                     android:layout_margin="10dp"
                     app:cardBackgroundColor="#116D6E"
                     app:cardCornerRadius="50dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.083"
-                    tools:layout_editor_absoluteX="10dp">
+                    app:layout_constraintVertical_bias="0.083">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView2"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_width="259dp"
+                            android:layout_height="82dp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_margin="15dp"
+                            android:layout_marginStart="45dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="45dp"
+                            android:layout_marginBottom="14dp"
                             android:text="Modules"
                             android:textAlignment="center"
                             android:textColor="@color/white"
-                            android:textSize="28dp"
+                            android:textSize="18dp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -195,36 +199,37 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card3"
-                    android:layout_width="389dp"
-                    android:layout_height="100dp"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
                     android:layout_margin="10dp"
                     app:cardBackgroundColor="#116D6E"
                     app:cardCornerRadius="50dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.983"
-                    tools:layout_editor_absoluteX="10dp">
+                    app:layout_constraintVertical_bias="0.946">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView3"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_width="243dp"
+                            android:layout_height="43dp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginBottom="15dp"
+                            android:layout_marginStart="39dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="41dp"
+                            android:layout_marginBottom="18dp"
                             android:text="Time Table"
                             android:textAlignment="center"
                             android:textColor="@color/white"
-                            android:textSize="32dp"
+                            android:textSize="18dp"
                             android:textStyle="bold" />
 
                     </RelativeLayout>

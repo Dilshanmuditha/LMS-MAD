@@ -1,5 +1,4 @@
 package com.example.lms_system;
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,15 +17,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,9 +43,9 @@ public class LectureMaterialUpload extends AppCompatActivity {
     private ArrayList<String> moduleNameArrayList, moduleIdArrayList;
 
     private FirebaseAuth mAuth;
-    private FirebaseDatabase database;
+    private FirebaseFirestore database;
     private FirebaseStorage storage;
-    private DatabaseReference databaseReference, materialsRef;
+    private StorageReference storageReference;
     private long timestamp;
     private TextView moduleNameTv, uploadBtn, text;
     private EditText moduleEt;
@@ -58,11 +57,9 @@ public class LectureMaterialUpload extends AppCompatActivity {
         setContentView(R.layout.activity_lecture_material_upload);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference("lecture_modules");
-        materialsRef = database.getReference().child("ModuleMaterials");
+        database = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
-
+        storageReference = storage.getReference();
         loadModuleNames();
 
         backBtn = findViewById(R.id.backBtn);
@@ -128,54 +125,80 @@ public class LectureMaterialUpload extends AppCompatActivity {
     private void saveLectureMaterials() {
         progressDialog.setMessage("Saving lecture materials....");
         String uid = mAuth.getUid();
-        String timestamp = String.valueOf(System.currentTimeMillis());
+        String timestamp = String.valueOf(System.currentTimeMillis
+
+                ());
         String filePathAndName = "ModuleMaterials/" + selectedModuleTitle + "/" + timestamp;
 
-        StorageReference storageReference = storage.getReference(filePathAndName);
-        storageReference.putFile(pdfUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                        while (!uriTask.isSuccessful()) ;
-                        String uploadedPdfUrl = "" + uriTask.getResult();
+        StorageReference fileReference = storageReference.child(filePathAndName);
+        UploadTask uploadTask = fileReference.putFile(pdfUri);
 
-                        if (uriTask.isSuccessful()) {
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("moduleId", selectedModuleId);
-                            hashMap.put("moduleName", selectedModuleTitle);
-                            hashMap.put("lectureTitle", lectureTitle);
-                            hashMap.put("lectureUrl", uploadedPdfUrl);
-                            hashMap.put("timestamp", timestamp);
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
 
-                            DatabaseReference ref = database.getReference("ModuleMaterials");
-                            ref.child(selectedModuleId).child(timestamp)
-                                    .setValue(hashMap)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(LectureMaterialUpload.this, "Lecture materials uploaded successfully", Toast.LENGTH_SHORT).show();
-                                            clearFields();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(LectureMaterialUpload.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
-                        Toast.makeText(LectureMaterialUpload.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                // Continue with the task to get the download URL
+                return fileReference.getDownloadUrl();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri downloadUri) {
+                String uploadedPdfUrl = downloadUri.toString();
+
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("moduleId", selectedModuleId);
+                hashMap.put("moduleName", selectedModuleTitle);
+                hashMap.put("lectureTitle", lectureTitle);
+                hashMap.put("lectureUrl", uploadedPdfUrl);
+                hashMap.put("timestamp", timestamp);
+
+                database.collection("lecture_modules")
+                        .document(selectedModuleId)
+                        .set(hashMap)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Lecture module document saved successfully
+                                // Now save lecture materials within the module document
+                                database.collection("lecture_modules")
+                                        .document(selectedModuleId)
+                                        .collection("ModuleMaterials")
+                                        .add(hashMap)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(LectureMaterialUpload.this, "Lecture materials uploaded successfully", Toast.LENGTH_SHORT).show();
+                                                clearFields();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(LectureMaterialUpload.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(LectureMaterialUpload.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(LectureMaterialUpload.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void clearFields() {
@@ -226,25 +249,29 @@ public class LectureMaterialUpload extends AppCompatActivity {
 
     private void loadModuleNames() {
         moduleIdArrayList = new ArrayList<>();
+
+
         moduleNameArrayList = new ArrayList<>();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                moduleIdArrayList.clear();
-                moduleNameArrayList.clear();
+        database.collection("lecture_modules")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String moduleId = documentSnapshot.getId();
+                            String moduleName = documentSnapshot.getString("moduleName");
 
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    String moduleName = ds.child("moduleName").getValue(String.class);
-
-                    moduleNameArrayList.add(moduleName);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(LectureMaterialUpload.this, "" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                            moduleIdArrayList.add(moduleId);
+                            moduleNameArrayList.add(moduleName);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(LectureMaterialUpload.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

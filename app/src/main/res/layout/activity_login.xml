@@ -69,16 +69,5 @@
         android:textStyle="bold"
         android:textSize="25dp"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="newRegister"
-        android:text="New Register ?"
-        android:textAlignment="center"
-        android:textSize="22dp"
-        android:textColor="#3F51B5"
-        android:textStyle="normal"/>
-
 
 </LinearLayout>

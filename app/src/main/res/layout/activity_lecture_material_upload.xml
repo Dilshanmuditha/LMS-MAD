@@ -50,24 +50,33 @@
                 android:id="@+id/titleNameTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_above="@+id/text"
+                android:layout_marginStart="11dp"
+                android:layout_marginEnd="11dp"
+                android:layout_marginBottom="76dp"
+                android:layout_toStartOf="@+id/attachBtn"
+                android:layout_toEndOf="@+id/backBtn"
                 android:text="Add lecture materials"
                 android:textColor="@color/white"
-                android:textSize="23sp"/>
+                android:textSize="23sp" />
+
             <TextView
                 android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titleNameTv"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="-10dp"
-                android:text="Enter details to continue"
-                android:layout_marginBottom="5dp"
-                android:singleLine="true"
-                android:textColor="@color/black"
+                android:layout_width="358dp"
+                android:layout_height="32dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="28dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="27dp"
                 android:gravity="center"
+                android:singleLine="true"
+                android:text="Enter details to continue"
+                android:textColor="@color/black"
                 android:textSize="12sp" />
         </RelativeLayout>
+
 
         <LinearLayout
             android:id="@+id/mainLL"
@@ -124,7 +133,6 @@
 
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/uploadBtn"
